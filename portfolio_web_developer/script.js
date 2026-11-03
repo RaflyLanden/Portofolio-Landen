@@ -76,17 +76,15 @@ navLinks?.querySelectorAll("a").forEach((link) => {
   });
 });
 
-// Animasi muncul saat elemen memasuki layar; konten tetap tampil jika tidak didukung.
+// Animasi fade setiap kali elemen masuk/keluar layar (dua arah scroll).
+// Elemen tidak di-unobserve supaya animasi tetap berjalan saat scroll ke atas.
 const revealElements = document.querySelectorAll(".reveal");
 if ("IntersectionObserver" in window) {
-  const observer = new IntersectionObserver((entries, currentObserver) => {
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-        currentObserver.unobserve(entry.target);
-      }
+      entry.target.classList.toggle("visible", entry.isIntersecting);
     });
-  }, { threshold: 0.12 });
+  }, { threshold: 0, rootMargin: "0px 0px -10% 0px" });
   revealElements.forEach((element) => observer.observe(element));
 } else {
   revealElements.forEach((element) => element.classList.add("visible"));
